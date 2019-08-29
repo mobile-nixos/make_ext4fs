@@ -18,6 +18,7 @@
 #define _EXT4_UTILS_EXT4_SB_H_
 
 #include "ext4_kernel_headers.h"
+#include <stdbool.h>
 
 #define EXT4_SUPER_MAGIC 0xEF53
 
@@ -42,6 +43,8 @@ struct fs_info {
 	uint32_t reserve_pcnt;
 	const char *label;
 	uint8_t no_journal;
+	bool with_uuid;
+	uint8_t uuid[16];
 };
 
 int ext4_parse_sb(struct ext4_super_block *sb, struct fs_info *info);

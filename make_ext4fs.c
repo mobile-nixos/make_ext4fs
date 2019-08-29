@@ -451,6 +451,11 @@ int make_ext4fs_internal(int fd, const char *_directory,
 	printf("    Inode size: %d\n", info.inode_size);
 	printf("    Journal blocks: %d\n", info.journal_blocks);
 	printf("    Label: %s\n", info.label);
+	if (info.with_uuid) {
+		char uuid[UUID_STR_LEN] = "";
+		uuid_to_string(info.uuid, uuid);
+		printf("    UUID: %s\n", uuid);
+	}
 
 	ext4_create_fs_aux_info();
 

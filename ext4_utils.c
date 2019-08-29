@@ -221,7 +221,13 @@ void ext4_fill_in_sb()
 	sb->s_feature_compat = info.feat_compat;
 	sb->s_feature_incompat = info.feat_incompat;
 	sb->s_feature_ro_compat = info.feat_ro_compat;
-	generate_uuid("extandroid/make_ext4fs", info.label, sb->s_uuid);
+	if (info.with_uuid) {
+		memset(sb->s_uuid, 0, sizeof(sb->s_uuid));
+		memcpy(sb->s_uuid, info.uuid, sizeof(sb->s_uuid));
+	}
+	else {
+		generate_uuid("extandroid/make_ext4fs", info.label, sb->s_uuid);
+	}
 	memset(sb->s_volume_name, 0, sizeof(sb->s_volume_name));
 	strncpy(sb->s_volume_name, info.label, sizeof(sb->s_volume_name));
 	memset(sb->s_last_mounted, 0, sizeof(sb->s_last_mounted));
@@ -521,6 +527,11 @@ int read_ext(int fd, int verbose)
 		printf("    Inodes per group: %d\n", info.inodes_per_group);
 		printf("    Inode size: %d\n", info.inode_size);
 		printf("    Label: %s\n", info.label);
+		if (info.with_uuid) {
+			char uuid[UUID_STR_LEN] = "";
+			uuid_to_string(info.uuid, uuid);
+			printf("    UUID: %s\n", uuid);
+		}
 		printf("    Blocks: %"PRIu64"\n", aux_info.len_blocks);
 		printf("    Block groups: %d\n", aux_info.groups);
 		printf("    Reserved block group size: %d\n", info.bg_desc_reserve_blocks);
