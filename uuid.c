@@ -59,3 +59,46 @@ void generate_uuid(const char *namespace, const char *name, u8 result[16])
 	uuid->clk_seq_hi_res &= ~(1 << 6);
 	uuid->clk_seq_hi_res |= 1 << 7;
 }
+
+void parse_uuid(const char *input, uint8_t result [16])
+{
+	int u = 0;
+	if (strlen(input) != UUID_STR_LEN-1) {
+		fprintf(stderr, "UUID MUST be in the format 00112233-4455-6677-8899-AABBCCDDEEFF.\n");
+		abort();
+	}
+	for (int i = 0; i < UUID_STR_LEN - 1; i++) {
+		if (i == 8 || i == 13 || i == 18 || i == 23) {
+			/* Skip hyphens */
+		}
+		else {
+			char pair[3] = "00";
+			strncpy(pair, input + i, 2);
+			result[u] = strtol(pair, NULL, 16);
+			/* This handled a pair, let's move one more further along. */
+			i++;
+			/* Move to the next byte. */
+			u++;
+		}
+	}
+}
+
+void uuid_to_string(const uint8_t uuid [16], char result [UUID_STR_LEN])
+{
+	/* Index in uuid */
+	int u = 0;
+	for (int i = 0; i < UUID_STR_LEN-1; i++) {
+		/* Handles separators */
+		if (i == 8 || i == 13 || i == 18 || i == 23) {
+			strcpy(result+i, "-");
+		}
+		else {
+			/* This writes \0 at the end of every invocation */
+			snprintf(result+i, 3, "%02X", uuid[u]);
+			/* This handled a pair, let's move one more further along. */
+			i++;
+			/* Move to the next byte. */
+			u++;
+		}
+	}
+}

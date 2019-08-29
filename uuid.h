@@ -19,6 +19,12 @@
 
 #include "ext4_utils.h"
 
+#define UUID_STR_LEN 36+1
+
 void generate_uuid(const char *namespace, const char *name, u8 result[16]);
+
+void parse_uuid(const char *input, uint8_t result [16]);
+
+void uuid_to_string(const uint8_t uuid [16], char result [UUID_STR_LEN]);
 
 #endif
